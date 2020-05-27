@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ExamDataSet" targetNamespace="http://tempuri.org/ExamDataSet.xsd" xmlns:mstns="http://tempuri.org/ExamDataSet.xsd" xmlns="http://tempuri.org/ExamDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="adminViewScores" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="adminViewScores (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.ExamSystem.Properties.Settings.GlobalReference.Default.adminViewScores" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="NamesTestsadnScoresTableAdapter" GeneratorDataComponentClassName="NamesTestsadnScoresTableAdapter" Name="NamesTestsadnScores" UserDataComponentName="NamesTestsadnScoresTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="adminViewScores (Settings)" DbObjectName="Exam.dbo.NamesTestsadnScores" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT [NAME OF STUDENT], [TEST TAKEN], marks FROM dbo.NamesTestsadnScores</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="NAME OF STUDENT" DataSetColumn="NAME OF STUDENT" />
+              <Mapping SourceColumn="TEST TAKEN" DataSetColumn="TEST TAKEN" />
+              <Mapping SourceColumn="marks" DataSetColumn="marks" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ExamDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="ExamDataSet" msprop:Generator_UserDSName="ExamDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="NamesTestsadnScores" msprop:Generator_TableClassName="NamesTestsadnScoresDataTable" msprop:Generator_TableVarName="tableNamesTestsadnScores" msprop:Generator_TablePropName="NamesTestsadnScores" msprop:Generator_RowDeletingName="NamesTestsadnScoresRowDeleting" msprop:Generator_RowChangingName="NamesTestsadnScoresRowChanging" msprop:Generator_RowEvHandlerName="NamesTestsadnScoresRowChangeEventHandler" msprop:Generator_RowDeletedName="NamesTestsadnScoresRowDeleted" msprop:Generator_UserTableName="NamesTestsadnScores" msprop:Generator_RowChangedName="NamesTestsadnScoresRowChanged" msprop:Generator_RowEvArgName="NamesTestsadnScoresRowChangeEvent" msprop:Generator_RowClassName="NamesTestsadnScoresRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="NAME_x0020_OF_x0020_STUDENT" msprop:Generator_ColumnVarNameInTable="columnNAME_OF_STUDENT" msprop:Generator_ColumnPropNameInRow="NAME_OF_STUDENT" msprop:Generator_ColumnPropNameInTable="NAME_OF_STUDENTColumn" msprop:Generator_UserColumnName="NAME OF STUDENT">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="75" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TEST_x0020_TAKEN" msprop:Generator_ColumnVarNameInTable="columnTEST_TAKEN" msprop:Generator_ColumnPropNameInRow="TEST_TAKEN" msprop:Generator_ColumnPropNameInTable="TEST_TAKENColumn" msprop:Generator_UserColumnName="TEST TAKEN">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="marks" msprop:Generator_ColumnVarNameInTable="columnmarks" msprop:Generator_ColumnPropNameInRow="marks" msprop:Generator_ColumnPropNameInTable="marksColumn" msprop:Generator_UserColumnName="marks">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="10" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
