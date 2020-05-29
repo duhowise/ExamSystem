@@ -1,176 +1,150 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
+using System.Management.Instrumentation;
 using ExamSystem.Data;
 
 namespace ExamSystem.Services
 {
-    class TestEvaluationService
+    public class TestEvaluationService
     {
-        private readonly ExamModel _database;
+        private readonly ExamDatabase _database;
 
-        public TestEvaluationService(ExamModel database)
+        public TestEvaluationService(ExamDatabase database)
         {
             _database = database;
         }
+
         public void SaveUserStatus(User user)
         {
             try
             {
-               var dbEntry= _database.Users.FirstOrDefault(x => x.UserType == user.UserType && x.password == user.password);
-               if (dbEntry == null)
-               {
-                   throw new Exception("could not save status to database");
-               }
-               dbEntry.status = "Completed";
-               _database.SaveChanges();
-            }
-
-            catch (SqlException exception)
-            {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-        
-        public void SaveMarks(string usercode,decimal Marks,string testCode)
-        {
-            ConnectionString Dbconnect = new ConnectionString();
-            try
-            {
-                SqlConnection connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                string query = $"insert into totalMarks([userid],[testid],[marks])values((select id from Users where password='{usercode}'),(select id from Test where testcode='{testCode}'),'{Marks}' )";
-                command = new SqlCommand(query, connection);
-                SqlDataReader datareader = command.ExecuteReader();
-            }
-
-            catch (SqlException exception)
-            {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-             
-        public string CheckUserStatus(string usercode)
-        {
-            string status = null;
-            ConnectionString Dbconnect = new ConnectionString();
-            try
-            {
-                SqlConnection connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-                SqlCommand command = new SqlCommand();
-                string query = "select [status] from [dbo].[Users] where [Id]=(select id from Users where password='" + usercode + "')  ";
-                command = new SqlCommand(query, connection);
-                SqlDataReader datareader = command.ExecuteReader();
-                while (datareader.Read())
+                var dbEntry =
+                    _database.Users.FirstOrDefault(x => x.UserType == user.UserType && x.Password == user.Password);
+                if (dbEntry == null)
                 {
-                    status = datareader.GetString(0);
+                    throw new Exception("could not save status to database");
                 }
+
+                dbEntry.Status = "Completed";
+                _database.SaveChanges();
             }
 
             catch (SqlException exception)
             {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                throw new ApplicationException(exception.Message, exception);
             }
-            return status;
         }
 
-        public int GetOriginalScore(string testCode)
+        public void SaveMarks(decimal marks, int testId, int userId)
         {
-            int count = 0;
-            var Dbconnect = new ConnectionString();
             try
             {
-                var connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                "select SUM(mark) from [dbo].[Question] where testid =(select id from Test where testcode='" + testCode + "')";
-                count = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
+                _database.TotalMarks.Add(new TotalMark
+                    {Marks = marks.ToString(CultureInfo.InvariantCulture), Testid = testId, Userid = userId});
+                _database.SaveChanges();
             }
 
             catch (SqlException exception)
             {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
+                throw new InstanceNotFoundException(exception.Message, exception);
 
-            return count;
+            }
         }
 
-        public int CorrectAnswers(string usercode, string testCode)
+        public string CheckUserStatus(int userId)
         {
-            int answers = 0;
-            //getCorrectAnswers From Database
-            var Dbconnect = new ConnectionString();
             try
             {
-                var connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                " SELECT COUNT(UserMarks.Mark)FROM UserMarks where testid =(select id from Test where testcode='" + testCode + "') and userid=(select id from Users where password='" + usercode + "') and mark=1  ";
-               answers = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
+                var user = _database.Users.FirstOrDefault(x => x.Id == userId);
+                return user?.Status;
             }
-
             catch (SqlException exception)
             {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                throw new InstanceNotFoundException(exception.Message, exception);
             }
-            return answers;
+        }
+        public string CheckUserStatus(string password)
+        {
+            try
+            {
+                var user = _database.Users.FirstOrDefault(x => x.Password == password);
+                return user?.Status;
+            }
+            catch (SqlException exception)
+            {
+                throw new InstanceNotFoundException(exception.Message, exception);
+            }
         }
 
-        public int WrongAnswers(string usercode, string testCode)
+        public int GetTotalMarksAssignedToTest(int testId)
         {
-            int answers = 0;
-            var Dbconnect = new ConnectionString();
             try
             {
-                var connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                " SELECT COUNT(UserMarks.Mark)FROM UserMarks where testid =(select id from Test where testcode='" + testCode + "') and userid=(select id from Users where password='" + usercode + "') and mark=0  ";
-                answers = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
+                var marks= _database.UserMarks.Where(x => x.Testid == testId );
+                return marks.Sum(x=>x.Mark);
             }
 
             catch (SqlException exception)
             {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                throw new InstanceNotFoundException(exception.Message, exception);
             }
-            return answers;
         }
 
-        public int CountQuestion(string testCode)
+        public int GetAllCorrectAnswersForUser(int testId, int userId)
         {
-            int count = 0;
-            var Dbconnect = new ConnectionString();
             try
             {
-                var connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                "select count(mark) from [dbo].[Question] where testid =(select id from Test where testcode='" + testCode + "')";
-                count = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
+
+                return _database.UserMarks.Count(x => x.Userid == userId && x.Testid == testId && x.Mark > 0);
             }
 
             catch (SqlException exception)
             {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                throw new InstanceNotFoundException(exception.Message, exception);
             }
-            return count;
+        }
+
+        public int GetAllWrongAnswersForUser(int userId, int testId)
+        {
+            try
+            {
+
+                return _database.UserMarks.Count(x => x.Userid == userId && x.Testid == testId && x.Mark == 0);
+            }
+
+            catch (SqlException exception)
+            {
+                throw new InstanceNotFoundException(exception.Message, exception);
+            }
+        }
+
+        public int GetTotalNumberOfQuestionForTest(int testId)
+        {
+            try
+            {
+                return _database.UserMarks.Count(x => x.Testid == testId);
+            }
+            catch (SqlException exception)
+            {
+                throw new InstanceNotFoundException(exception.Message, exception);
+            }
+        }
+
+        public int GetTotalMarksForUser(int userId, int testId)
+        {
+            try
+            {
+
+                var marks = _database.UserMarks.Where(x => x.Testid == testId && x.Userid == userId).Select(x => x.Mark);
+                return marks.Sum();
+            }
+
+            catch (SqlException exception)
+            {
+                throw new InstanceNotFoundException(exception.Message, exception);
+            }
         }
     }
 }

@@ -35,15 +35,18 @@ namespace ExamSystem.UI
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.Testscores = new DevComponents.DotNetBar.Controls.DataGridViewX();
-            this.nAMEOFSTUDENTDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tESTTAKENDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.marksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.namesTestsadnScoresBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.examDataSet = new ExamDataSet();
-            this.namesTestsadnScoresTableAdapter = new NamesTestsadnScoresTableAdapter();
+            this.examDataSet = new ExamSystem.Logic.ExamDataSet();
+            this.namesTestsadnScoresTableAdapter = new ExamSystem.Logic.ExamDataSetTableAdapters.NamesTestsadnScoresTableAdapter();
+            this.namesTestsadnScoreBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.idDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameOfStudentDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.testTakenDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.marksDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.Testscores)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.namesTestsadnScoresBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.examDataSet)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.namesTestsadnScoreBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // Testscores
@@ -56,10 +59,11 @@ namespace ExamSystem.UI
             this.Testscores.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.Testscores.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.Testscores.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.nAMEOFSTUDENTDataGridViewTextBoxColumn,
-            this.tESTTAKENDataGridViewTextBoxColumn,
+            this.idDataGridViewTextBoxColumn,
+            this.nameOfStudentDataGridViewTextBoxColumn,
+            this.testTakenDataGridViewTextBoxColumn,
             this.marksDataGridViewTextBoxColumn});
-            this.Testscores.DataSource = this.namesTestsadnScoresBindingSource;
+            this.Testscores.DataSource = this.namesTestsadnScoreBindingSource;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -71,31 +75,12 @@ namespace ExamSystem.UI
             this.Testscores.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Testscores.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(215)))), ((int)(((byte)(229)))));
             this.Testscores.Location = new System.Drawing.Point(0, 0);
+            this.Testscores.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Testscores.Name = "Testscores";
             this.Testscores.ReadOnly = true;
-            this.Testscores.Size = new System.Drawing.Size(1207, 689);
+            this.Testscores.RowHeadersWidth = 51;
+            this.Testscores.Size = new System.Drawing.Size(1609, 848);
             this.Testscores.TabIndex = 0;
-            // 
-            // nAMEOFSTUDENTDataGridViewTextBoxColumn
-            // 
-            this.nAMEOFSTUDENTDataGridViewTextBoxColumn.DataPropertyName = "NAME OF STUDENT";
-            this.nAMEOFSTUDENTDataGridViewTextBoxColumn.HeaderText = "NAME OF STUDENT";
-            this.nAMEOFSTUDENTDataGridViewTextBoxColumn.Name = "nAMEOFSTUDENTDataGridViewTextBoxColumn";
-            this.nAMEOFSTUDENTDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tESTTAKENDataGridViewTextBoxColumn
-            // 
-            this.tESTTAKENDataGridViewTextBoxColumn.DataPropertyName = "TEST TAKEN";
-            this.tESTTAKENDataGridViewTextBoxColumn.HeaderText = "TEST TAKEN";
-            this.tESTTAKENDataGridViewTextBoxColumn.Name = "tESTTAKENDataGridViewTextBoxColumn";
-            this.tESTTAKENDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // marksDataGridViewTextBoxColumn
-            // 
-            this.marksDataGridViewTextBoxColumn.DataPropertyName = "marks";
-            this.marksDataGridViewTextBoxColumn.HeaderText = "marks";
-            this.marksDataGridViewTextBoxColumn.Name = "marksDataGridViewTextBoxColumn";
-            this.marksDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // namesTestsadnScoresBindingSource
             // 
@@ -111,14 +96,51 @@ namespace ExamSystem.UI
             // 
             this.namesTestsadnScoresTableAdapter.ClearBeforeFill = true;
             // 
+            // namesTestsadnScoreBindingSource
+            // 
+            this.namesTestsadnScoreBindingSource.DataSource = typeof(ExamSystem.Data.NamesTestsadnScore);
+            // 
+            // idDataGridViewTextBoxColumn
+            // 
+            this.idDataGridViewTextBoxColumn.DataPropertyName = "Id";
+            this.idDataGridViewTextBoxColumn.HeaderText = "Id";
+            this.idDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.idDataGridViewTextBoxColumn.Name = "idDataGridViewTextBoxColumn";
+            this.idDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // nameOfStudentDataGridViewTextBoxColumn
+            // 
+            this.nameOfStudentDataGridViewTextBoxColumn.DataPropertyName = "NameOfStudent";
+            this.nameOfStudentDataGridViewTextBoxColumn.HeaderText = "NameOfStudent";
+            this.nameOfStudentDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.nameOfStudentDataGridViewTextBoxColumn.Name = "nameOfStudentDataGridViewTextBoxColumn";
+            this.nameOfStudentDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // testTakenDataGridViewTextBoxColumn
+            // 
+            this.testTakenDataGridViewTextBoxColumn.DataPropertyName = "TestTaken";
+            this.testTakenDataGridViewTextBoxColumn.HeaderText = "TestTaken";
+            this.testTakenDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.testTakenDataGridViewTextBoxColumn.Name = "testTakenDataGridViewTextBoxColumn";
+            this.testTakenDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // marksDataGridViewTextBoxColumn
+            // 
+            this.marksDataGridViewTextBoxColumn.DataPropertyName = "Marks";
+            this.marksDataGridViewTextBoxColumn.HeaderText = "Marks";
+            this.marksDataGridViewTextBoxColumn.MinimumWidth = 6;
+            this.marksDataGridViewTextBoxColumn.Name = "marksDataGridViewTextBoxColumn";
+            this.marksDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
             // ViewResult
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1207, 689);
+            this.ClientSize = new System.Drawing.Size(1609, 848);
             this.Controls.Add(this.Testscores);
             this.DoubleBuffered = true;
             this.EnableGlass = false;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ViewResult";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ViewResult";
@@ -126,6 +148,7 @@ namespace ExamSystem.UI
             ((System.ComponentModel.ISupportInitialize)(this.Testscores)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.namesTestsadnScoresBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.examDataSet)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.namesTestsadnScoreBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -135,8 +158,10 @@ namespace ExamSystem.UI
         private ExamDataSet examDataSet;
         private System.Windows.Forms.BindingSource namesTestsadnScoresBindingSource;
         private ExamSystem.Logic.ExamDataSetTableAdapters.NamesTestsadnScoresTableAdapter namesTestsadnScoresTableAdapter;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nAMEOFSTUDENTDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn tESTTAKENDataGridViewTextBoxColumn;
+        private System.Windows.Forms.BindingSource namesTestsadnScoreBindingSource;
+        private System.Windows.Forms.DataGridViewTextBoxColumn idDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameOfStudentDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn testTakenDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn marksDataGridViewTextBoxColumn;
     }
 }

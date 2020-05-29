@@ -17,7 +17,7 @@ namespace ExamSystem.UI
 
         private void UserPage_Load(object sender, EventArgs e)
         {
-            UserInfromationGrid.DataSource = _userInformationService.GetUserData();
+            UserInfromationGrid.DataSource = _userInformationService.GetUserInformation();
         }
     }
 }

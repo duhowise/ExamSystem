@@ -1,19 +1,21 @@
 ﻿using System;
+using ExamSystem.Services;
 
 namespace ExamSystem.UI
 {
     public partial class ViewResult : DevComponents.DotNetBar.OfficeForm
     {
-        public ViewResult()
+        private readonly UserInformationService _userInformationService;
+
+        public ViewResult(UserInformationService userInformationService)
         {
+            _userInformationService = userInformationService;
             InitializeComponent();
         }
 
         private void ViewResult_Load(object sender, EventArgs e)
         {
-            // TODO: This line of code loads data into the 'examDataSet.NamesTestsadnScores' table. You can move, or remove it, as needed.
-            this.namesTestsadnScoresTableAdapter.Fill(this.examDataSet.NamesTestsadnScores);
-
+            Testscores.DataSource = _userInformationService.GetUserNamesAndTestScores();
 
         }
     }

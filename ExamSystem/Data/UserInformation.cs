@@ -9,14 +9,14 @@ namespace ExamSystem.Data
         [Key]
         [Column(Order = 0)]
         [StringLength(75)]
-        public string NAME { get; set; }
+        public string Name { get; set; }
 
         [Key]
         [Column(Order = 1)]
         [StringLength(75)]
-        public string PASSWORD { get; set; }
+        public string Password { get; set; }
 
         [StringLength(20)]
-        public string STATUS { get; set; }
+        public string Status { get; set; }
     }
 }

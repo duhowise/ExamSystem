@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.SqlClient;
 using System.Linq;
 using ExamSystem.Data;
 
@@ -9,32 +6,41 @@ namespace ExamSystem.Services
 {
     public class QuestionService
     {
-        private ExamModel _database;
+        private readonly ExamDatabase _database;
 
-        public QuestionService(ExamModel database)
+        public QuestionService(ExamDatabase database)
         {
             _database = database;
         }
 
         
 
-        public Test GetTestDetails(string testCode)
+        
+        public void InsertQuestionAnswer(AnsweredQuestion answeredQuestion)
         {
             try
             {
-                return _database.Tests.Include(x=>x.Questions).FirstOrDefault(x => x.testcode == testCode);
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(exception.Message,exception);
-            }
-        }
-        public void InsertQuestionAnswer(AnsweredQuestion question)
-        {
-            try
-            {
-                _database.AnsweredQuestions.Add(question);
-
+                var originalQuestion = _database.Questions.FirstOrDefault(x => x.Id == answeredQuestion.Questionid);
+                if (originalQuestion == null) return;
+                if (!string.Equals(originalQuestion.Answer.Trim(), answeredQuestion.Useranswer.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    _database.UserMarks.Add(new UserMark
+                    {
+                        Questionid = originalQuestion.Id,
+                        Mark = 0,
+                        Testid = originalQuestion.Testid,
+                        Userid = Convert.ToInt32(answeredQuestion.Userid)
+                    });
+                }
+                _database.AnsweredQuestions.Add(answeredQuestion);
+                _database.UserMarks.Add(new UserMark
+                {
+                    Questionid = originalQuestion.Id,
+                    Mark = 5,
+                    Testid = originalQuestion.Testid,
+                    Userid = Convert.ToInt32(answeredQuestion.Userid)
+                });
+                _database.SaveChanges();
             }
             catch (Exception e)
             {

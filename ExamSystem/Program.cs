@@ -21,18 +21,18 @@ namespace ExamSystem
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            var database = container.GetRequiredService<ExamModel>();
+            var database = container.GetRequiredService<ExamDatabase>();
 
             var admin = database.Users.FirstOrDefault(x =>
-                x.password == "Administrator" && x.UserType == "Administrator");
+                x.Password == "Administrator" && x.UserType == "Administrator");
 
             if (admin == null)
             {
                 database.Users.Add(new User
                 {
-                    password = "Administrator",
+                    Password = "Administrator",
                     UserType = "Administrator",
-                    name = "Default Admin"
+                    Name = "Default Admin"
                 });
                 database.SaveChanges();
             }
@@ -41,7 +41,7 @@ namespace ExamSystem
             Application.Run(container.GetRequiredService<Login>());
         }
 
-        private static IServiceProvider CreateServiceProvider()
+        public static IServiceProvider CreateServiceProvider()
         {
             var services = new ServiceCollection();
             services.AddScoped<Login>();
@@ -50,18 +50,23 @@ namespace ExamSystem
             services.AddScoped<TestPage>();
             services.AddScoped<DashBoard>();
             services.AddScoped<UserResult>();
-            services.AddScoped<TestEvaluationService>();
+            services.AddScoped<UserPage>();
             services.AddScoped<ViewResult>();
             services.AddScoped<AddTest>();
             services.AddScoped<AddQuestions>();
             services.AddScoped<AddCandidate>();
 
 
-            services.AddSingleton<ExamModel>();
-            services.AddSingleton<IPageService<Login>, LoginPageService>();
-            services.AddSingleton<IPageService<Admin>, AdminPageService>();
+            services.AddSingleton<Yates>();
+            services.AddSingleton<TestEvaluationService>();
+            services.AddSingleton<ExamDatabase>();
             services.AddSingleton<UserInformationService>();
             services.AddSingleton<LoginService>();
+            services.AddSingleton<QuestionService>();
+            services.AddSingleton<TestService>();
+            services.AddSingleton<UserInformationService>();
+            services.AddSingleton<ApplicationUserStateService>();
+          
 
             return services.BuildServiceProvider();
         }

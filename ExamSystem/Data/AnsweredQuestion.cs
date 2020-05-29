@@ -6,19 +6,14 @@ namespace ExamSystem.Data
     {
         public int Id { get; set; }
 
-        public int? testid { get; set; }
+        public int? Testid { get; set; }
 
-        public int? userid { get; set; }
+        public int? Userid { get; set; }
 
-        public int? questionid { get; set; }
-
-        [StringLength(10)]
-        public string useranswer { get; set; }
-
-        public string temp { get; set; }
+        public int? Questionid { get; set; }
 
         [StringLength(10)]
-        public string tempass { get; set; }
+        public string Useranswer { get; set; }
 
         public virtual Test Test { get; set; }
 

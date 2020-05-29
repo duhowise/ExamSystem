@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Security.Claims;
 using System.Windows.Forms;
-using ExamSystem.Data;
-using ExamSystem.Logic;
 using ExamSystem.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExamSystem.UI
 {
@@ -12,22 +10,24 @@ namespace ExamSystem.UI
     public partial class Login : DevComponents.DotNetBar.OfficeForm
     {
         private readonly LoginService _loginService;
-        private readonly IPageService<Admin> _adminPageService;
+        private readonly TestEvaluationService _testEvaluationService;
+        private readonly ApplicationUserStateService _stateService;
 
-        public Login(LoginService loginService,IPageService<Admin> adminPageService)
+        public Login(LoginService loginService, TestEvaluationService testEvaluationService, ApplicationUserStateService stateService)
         {
             InitializeComponent();
             _loginService = loginService;
-            _adminPageService = adminPageService;
+            _testEvaluationService = testEvaluationService;
+            _stateService = stateService;
         }
 
         //private static Login _instance;
-        public static string pass;
+        public static string UserPassword;
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData==(Keys.Enter))
             {
-                ProcessLogin(pass);
+                ProcessLogin(UserPassword);
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -55,11 +55,13 @@ namespace ExamSystem.UI
                         Usercode.Focus();
                         return;
                     }
-                    AppDomain.CurrentDomain.SetThreadPrincipal(new ClaimsPrincipal(new CustomIdentity(userLoginSuccessful, new[] { userLoginSuccessful.UserType })));
-                    this.Hide();
-                    //_testPage.Show();
+                    _stateService.SetCurrentlyLoggedInUser(userLoginSuccessful);
 
-               
+                    this.Hide();
+                    var testPage = Program.CreateServiceProvider().GetRequiredService<TestPage>();
+                testPage.Show();
+
+
 
             }
             catch (SqlException exception)
@@ -70,11 +72,11 @@ namespace ExamSystem.UI
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            pass = Usercode.Text.ToString();
-            string status = new TestEvaluationService().CheckUserStatus(pass);
+            UserPassword = Usercode.Text.ToString();
+            string status = _testEvaluationService.CheckUserStatus(UserPassword);
             if (status != "Completed")
             {
-                ProcessLogin(pass);
+                ProcessLogin(UserPassword);
             }
             else
             {
@@ -109,7 +111,8 @@ namespace ExamSystem.UI
         private void fileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Hide();
-            _adminPageService.GetPage().Show();
+         var adminPage=   Program.CreateServiceProvider().GetRequiredService<Admin>();
+            adminPage.Show();
         }
     }
 }

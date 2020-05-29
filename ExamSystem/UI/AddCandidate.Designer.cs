@@ -39,19 +39,22 @@ namespace ExamSystem.UI
             this.label3 = new System.Windows.Forms.Label();
             this.UserType = new System.Windows.Forms.ComboBox();
             this.userTest = new System.Windows.Forms.ComboBox();
-            this.examDataSet = new ExamDataSet();
+            this.examDataSet = new ExamSystem.Logic.ExamDataSet();
             this.examDataSetBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.button2 = new System.Windows.Forms.Button();
+            this.testBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.examDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.examDataSetBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.testBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(625, 281);
+            this.button1.Location = new System.Drawing.Point(833, 346);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(89, 32);
+            this.button1.Size = new System.Drawing.Size(119, 39);
             this.button1.TabIndex = 0;
             this.button1.Text = "Save";
             this.button1.UseVisualStyleBackColor = true;
@@ -60,29 +63,32 @@ namespace ExamSystem.UI
             // UserText
             // 
             this.UserText.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UserText.Location = new System.Drawing.Point(192, 43);
+            this.UserText.Location = new System.Drawing.Point(256, 53);
+            this.UserText.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UserText.Multiline = true;
             this.UserText.Name = "UserText";
-            this.UserText.Size = new System.Drawing.Size(361, 30);
+            this.UserText.Size = new System.Drawing.Size(480, 36);
             this.UserText.TabIndex = 1;
             this.UserText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.UserText_KeyDown);
             // 
             // PasswordText
             // 
             this.PasswordText.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.PasswordText.Location = new System.Drawing.Point(192, 99);
+            this.PasswordText.Location = new System.Drawing.Point(256, 122);
+            this.PasswordText.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PasswordText.Multiline = true;
             this.PasswordText.Name = "PasswordText";
-            this.PasswordText.Size = new System.Drawing.Size(361, 34);
+            this.PasswordText.Size = new System.Drawing.Size(480, 41);
             this.PasswordText.TabIndex = 2;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(106, 43);
+            this.label1.Location = new System.Drawing.Point(141, 53);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 22);
+            this.label1.Size = new System.Drawing.Size(75, 27);
             this.label1.TabIndex = 3;
             this.label1.Text = "Name";
             // 
@@ -90,9 +96,10 @@ namespace ExamSystem.UI
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(79, 111);
+            this.label2.Location = new System.Drawing.Point(105, 137);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(94, 22);
+            this.label2.Size = new System.Drawing.Size(117, 27);
             this.label2.TabIndex = 4;
             this.label2.Text = "Password";
             // 
@@ -100,9 +107,10 @@ namespace ExamSystem.UI
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Arial", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(106, 213);
+            this.label3.Location = new System.Drawing.Point(141, 262);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(52, 22);
+            this.label3.Size = new System.Drawing.Size(64, 27);
             this.label3.TabIndex = 5;
             this.label3.Text = "Type";
             // 
@@ -114,20 +122,25 @@ namespace ExamSystem.UI
             "Slelect Type",
             "User",
             "Administrator"});
-            this.UserType.Location = new System.Drawing.Point(192, 213);
+            this.UserType.Location = new System.Drawing.Point(256, 262);
+            this.UserType.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UserType.Name = "UserType";
-            this.UserType.Size = new System.Drawing.Size(361, 30);
+            this.UserType.Size = new System.Drawing.Size(480, 35);
             this.UserType.TabIndex = 11;
             this.UserType.SelectedIndexChanged += new System.EventHandler(this.UserType_SelectedIndexChanged);
             // 
             // userTest
             // 
+            this.userTest.DataSource = this.testBindingSource;
+            this.userTest.DisplayMember = "name";
             this.userTest.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userTest.FormattingEnabled = true;
-            this.userTest.Location = new System.Drawing.Point(192, 258);
+            this.userTest.Location = new System.Drawing.Point(256, 318);
+            this.userTest.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.userTest.Name = "userTest";
-            this.userTest.Size = new System.Drawing.Size(361, 33);
+            this.userTest.Size = new System.Drawing.Size(480, 39);
             this.userTest.TabIndex = 12;
+            this.userTest.ValueMember = "Id";
             // 
             // examDataSet
             // 
@@ -142,19 +155,24 @@ namespace ExamSystem.UI
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Arial Narrow", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(192, 162);
+            this.button2.Location = new System.Drawing.Point(256, 199);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(178, 32);
+            this.button2.Size = new System.Drawing.Size(237, 39);
             this.button2.TabIndex = 13;
             this.button2.Text = "Generate Password";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // testBindingSource
+            // 
+            this.testBindingSource.DataSource = typeof(ExamSystem.Data.Test);
+            // 
             // AddCandidate
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(726, 325);
+            this.ClientSize = new System.Drawing.Size(968, 400);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.userTest);
             this.Controls.Add(this.UserType);
@@ -166,6 +184,7 @@ namespace ExamSystem.UI
             this.Controls.Add(this.button1);
             this.DoubleBuffered = true;
             this.EnableGlass = false;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "AddCandidate";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -173,6 +192,7 @@ namespace ExamSystem.UI
             this.Load += new System.EventHandler(this.AddCandidate_Load);
             ((System.ComponentModel.ISupportInitialize)(this.examDataSet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.examDataSetBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.testBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -191,5 +211,6 @@ namespace ExamSystem.UI
         private ExamSystem.Logic.ExamDataSet examDataSet;
         private System.Windows.Forms.BindingSource examDataSetBindingSource;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.BindingSource testBindingSource;
     }
 }

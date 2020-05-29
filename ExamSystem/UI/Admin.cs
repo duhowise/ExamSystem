@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using ExamSystem.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExamSystem.UI
 {
@@ -11,11 +12,11 @@ namespace ExamSystem.UI
         private LoginService _loginService;
 
 
-        public Admin( LoginService loginService, Login loginPage)
+        public Admin( LoginService loginService)
         {
             InitializeComponent();
             _loginService = loginService;
-            _loginPage = loginPage;
+            _loginPage = Program.CreateServiceProvider().GetRequiredService<Login>(); ;
         }
         private void button1_Click(object sender, EventArgs e)
         {
@@ -31,7 +32,8 @@ namespace ExamSystem.UI
                 if (userSuccessfullyLoggedIn!=null)
                 {
                     this.Hide();
-                    //_dashBoardPage.Show();
+                    var dashBoard = Program.CreateServiceProvider().GetRequiredService<DashBoard>();
+                    dashBoard.Show();
                 }
                 else
                 {

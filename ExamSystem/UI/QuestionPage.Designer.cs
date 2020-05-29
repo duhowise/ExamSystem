@@ -289,7 +289,6 @@
             this.Name = "QuestionPage";
             this.Text = "QuestionPage";
             this.AutoSizeChanged += new System.EventHandler(this.QuestionPage_AutoSizeChanged);
-            this.Load += new System.EventHandler(this.QuestionPage_Load);
             this.ClientSizeChanged += new System.EventHandler(this.QuestionPage_ClientSizeChanged);
             this.SizeChanged += new System.EventHandler(this.QuestionPage_SizeChanged);
             this.panel1.ResumeLayout(false);

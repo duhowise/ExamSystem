@@ -13,16 +13,13 @@ namespace ExamSystem.Data
         [Key]
         [Column("NAME OF STUDENT", Order = 1)]
         [StringLength(75)]
-        public string NAME_OF_STUDENT { get; set; }
+        public string NameOfStudent { get; set; }
 
         [Key]
         [Column("TEST TAKEN", Order = 2)]
         [StringLength(50)]
-        public string TEST_TAKEN { get; set; }
+        public string TestTaken { get; set; }
 
-        [Key]
-        [Column(Order = 3)]
-        [StringLength(10)]
-        public string marks { get; set; }
+        public decimal Marks { get; set; }
     }
 }

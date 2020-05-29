@@ -15,7 +15,7 @@ namespace ExamSystem.Data
 
         #region IIdentity Members
 
-        public string Name => _user.name;
+        public string Name => _user.Name;
         public User Credentials => _user;
         public string AuthenticationType => "Custom authentication";
 

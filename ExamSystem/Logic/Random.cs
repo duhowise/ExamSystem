@@ -7,13 +7,13 @@ namespace ExamSystem.Logic
 {
     public class Yates
     {
-        private static Random rand = new Random();
+        private static Random _rand = new Random();
 
         public Stack<Question> ShuffleQuestions(List<Question> questions)
         {
             for (var i = questions.Count - 1; i > 0; i--)
             {
-                var j = rand.Next(i + 1);
+                var j = _rand.Next(i + 1);
                 var temp = questions[i];
                 questions[i] = questions[j];
                 questions[j] = temp;

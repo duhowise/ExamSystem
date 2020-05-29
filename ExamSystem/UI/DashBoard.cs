@@ -1,45 +1,21 @@
 ﻿using System;
 using DevComponents.DotNetBar;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExamSystem.UI
 {
     public partial class DashBoard : OfficeForm
     {
-   
+        
+
+
         public DashBoard( )
         {
             InitializeComponent();
-           
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            //_addQuestionsPage.Show();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //_addTestPage.Show();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //_addCandidatePage.Show();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            ViewResult adminViewResult= new ViewResult();
-            adminViewResult.Show();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            //Hide();
-            //_loginPage.Show();
-
-        }
+        
 
         private void DashBoard_Load(object sender, EventArgs e)
         {
@@ -47,37 +23,40 @@ namespace ExamSystem.UI
         }
         private void UserInfo_Click(object sender, ClickEventArgs e)
         {
-            //var userinfo=new UserPage();
-            //userinfo.ShowDialog();
+            var userPage = Program.CreateServiceProvider().GetRequiredService<UserPage>();
+            userPage.ShowDialog();
         }
         private void AddSubject_Click(object sender, ClickEventArgs e)
         {
-            AddTest addTest = new AddTest();
+            var addTest = Program.CreateServiceProvider().GetRequiredService<AddTest>(); 
             addTest.ShowDialog();
         }
 
         private void AddCandidate_Click(object sender, ClickEventArgs e)
         {
-            AddCandidate addCandidate = new AddCandidate();
+           var  addCandidate = Program.CreateServiceProvider().GetRequiredService<AddCandidate>();
             addCandidate.ShowDialog();
         }
 
         private void AddQuestions_Click(object sender, ClickEventArgs e)
         {
-            //_addQuestionsPage.ShowDialog();
+            var addQuestions = Program.CreateServiceProvider().GetRequiredService<AddQuestions>();
+            addQuestions.ShowDialog();
         }
 
         private void ViewResults_Click(object sender, ClickEventArgs e)
         {
-            //_viewResultPage.ShowDialog();
+            var viewResult = Program.CreateServiceProvider().GetRequiredService<ViewResult>();
+            viewResult.ShowDialog();
         }
 
         private void Logout_Click(object sender, ClickEventArgs e)
         {
-           
-            //Hide();
-            //_loginPage.Show();
+
+            Hide();
+           var loginPage = Program.CreateServiceProvider().GetRequiredService<Login>();
+           loginPage.ShowDialog();
         }
 
- }
+    }
 }

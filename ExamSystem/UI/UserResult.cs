@@ -1,120 +1,101 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
+using System.Threading;
 using System.Windows.Forms;
-using ExamSystem.Logic;
+using ExamSystem.Data;
 using ExamSystem.Services;
 
 namespace ExamSystem.UI
 {
     public partial class UserResult : DevComponents.DotNetBar.OfficeForm
     {
-        public static string userCode;
+        private readonly TestEvaluationService _testEvaluationService;
+        private readonly TestService _testService;
+        private readonly User _currentUser;
 
-        private decimal score;
-
-        public string testCode;
-        private  int time = 0;
-        private int Correct = 0;
-        int Wrong=0;
-        private int nonAnswered = 0;
-
-        public UserResult()
+        public UserResult(TestEvaluationService testEvaluationService,ApplicationUserStateService applicationUserStateService,TestService testService)
         {
             InitializeComponent();
+
+            _testEvaluationService = testEvaluationService;
+            _testService = testService;
+            _currentUser = applicationUserStateService.CurrentlyLoggedInUser();
+            TestId = applicationUserStateService.GetTestId();
+            this.Load += UserResult_Load;
+            
         }
 
-        public int GetMarks()
+
+        private decimal _score;
+
+        public int TestId;
+        private int _time = 0;
+        private int _correct = 0;
+        int _wrong = 0;
+        private int _nonAnswered = 0;
+        
+        public int GetMarksObtainedByUser()
         {
-            //MessageBox.Show(testCode + "" + userCode);
-           int marks = 0;
-            var Dbconnect = new ConnectionString();
-            try
-            {
-                var connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect()); 
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                    "select SUM(mark) from [dbo].[UserMarks] where userid =(select id from Users where password='" +userCode + "') and testid=(select id from Test where testcode='" + testCode + "')";
-                marks = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
-            }
-
-            catch (SqlException exception)
-            {
-                MessageBox.Show(exception.Message, "information!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-
-            return marks;
+            return _testEvaluationService.GetTotalMarksForUser(_currentUser.Id, TestId);
         }
 
 
         public void CloseTimer()
         {
-            if (time != 60) return;
+            if (_time != 60) return;
             closetime.Stop();
             Hide();
             Application.Exit();
             Application.Restart();
         }
 
-        //public decimal CalculateFinal(decimal score,decimal original)
-        //{
-        //    decimal percent = 0;
-        //    decimal answer=0;
-        //    answer= (score)/(original);
-        //    percent = answer*100;
-        //    return percent;
-        //}
+      
 
 
         private void UserResult_Load(object sender, EventArgs e)
         {
-            //userCode = _loginPage.getPasscode;
-            //testCode = _testPage.getTestCode;
 
             closetime.Start();
-            int mark = GetMarks();
-            //int ori = new UserRemarks().GetOriginalScore(testCode);
+            int mark = GetMarksObtainedByUser();
 
-            decimal finalMark = 0;
-            Wrong = new TestEvaluationService().WrongAnswers(userCode, testCode);
-            Correct = new TestEvaluationService().CorrectAnswers(userCode, testCode);
-            finalMark = decimal.Round(mark);
-            CorrectAnswer.Text = CorrectAnswer.Text + " " + Correct.ToString();
-            WrongAnswer.Text = WrongAnswer.Text + " " + Wrong.ToString();
+            var test = _testService.GetTestDetails(TestId);
+            _wrong = _testEvaluationService.GetAllWrongAnswersForUser(_currentUser.Id, TestId);
+            _correct = _testEvaluationService.GetAllCorrectAnswersForUser(TestId, _currentUser.Id);
+            _score = decimal.Round(mark);
+            CorrectAnswer.Text += $@" {_correct}";
+            WrongAnswer.Text += $@"{_wrong}";
 
-            int total = 0;
-            total = Correct + Wrong;
-            nonAnswered = new TestEvaluationService().CountQuestion(testCode) - total;
-            UnAnswered.Text = UnAnswered.Text + " " + nonAnswered.ToString();
+            int total = _testEvaluationService.GetTotalMarksAssignedToTest(TestId);
+            _nonAnswered = Convert.ToInt32(test.NumberofQ) - (_correct + _wrong);
+            UnAnswered.Text += $@" {_nonAnswered}";
 
-            Score.Text = Convert.ToString(finalMark);
-            score = finalMark;
-            if (score >= 25)
+            Score.Text = Convert.ToString(_score, CultureInfo.InvariantCulture);
+            if (_score >= 25)
             {
                 Score.ForeColor = Color.Green;
                 Display.ForeColor = Color.Green;
             }
-            if (score < 25 && score > 15)
+
+            if (_score < 25 && _score > 15)
             {
                 Score.ForeColor = Color.Yellow;
                 Display.ForeColor = Color.Yellow;
             }
-            if (score < 15)
+
+            if (_score < 15)
             {
                 Score.ForeColor = Color.Red;
                 Display.ForeColor = Color.Red;
             }
 
-            new TestEvaluationService().SaveMarks(userCode, score, testCode);
-            new TestEvaluationService().SaveUserStatus(userCode);
+            _testEvaluationService.SaveMarks(_score, TestId, _currentUser.Id);
+            _testEvaluationService.SaveUserStatus(_currentUser);
         }
 
         private void closetime_Tick(object sender, EventArgs e)
         {
-            time++;
+            _time++;
             CloseTimer();
         }
     }

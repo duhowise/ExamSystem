@@ -10,7 +10,7 @@ namespace ExamSystem.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Test()
         {
-            answers = new HashSet<Answer>();
+            Answers = new HashSet<Answer>();
             AnsweredQuestions = new HashSet<AnsweredQuestion>();
             Questions = new HashSet<Question>();
             UserMarks = new HashSet<UserMark>();
@@ -22,18 +22,18 @@ namespace ExamSystem.Data
 
         [Required]
         [StringLength(50)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string testcode { get; set; }
+        public string Testcode { get; set; }
 
         public int? NumberofQ { get; set; }
 
         public int? Time { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Answer> answers { get; set; }
+        public virtual ICollection<Answer> Answers { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AnsweredQuestion> AnsweredQuestions { get; set; }

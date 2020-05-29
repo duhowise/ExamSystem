@@ -2,11 +2,13 @@ namespace ExamSystem.Data
 {
     using System.Data.Entity;
 
-    public partial class ExamModel : DbContext
+    public partial class ExamDatabase : DbContext
     {
-        public ExamModel()
+        public ExamDatabase()
             : base("name=ExamDbContext")
         {
+            Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+
         }
 
         public virtual DbSet<Answer> Answers { get; set; }
@@ -23,15 +25,11 @@ namespace ExamSystem.Data
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AnsweredQuestion>()
-                .Property(e => e.useranswer)
+                .Property(e => e.Useranswer)
                 .IsFixedLength();
-
-            modelBuilder.Entity<AnsweredQuestion>()
-                .Property(e => e.tempass)
-                .IsFixedLength();
-
+            
             modelBuilder.Entity<Question>()
-                .Property(e => e.answer)
+                .Property(e => e.Answer)
                 .IsFixedLength();
 
             modelBuilder.Entity<Question>()
@@ -50,7 +48,7 @@ namespace ExamSystem.Data
                 .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<TotalMark>()
-                .Property(e => e.marks)
+                .Property(e => e.Marks)
                 .IsFixedLength();
 
             modelBuilder.Entity<User>()
@@ -62,9 +60,6 @@ namespace ExamSystem.Data
                 .Property(e => e.Name)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<NamesTestsadnScore>()
-                .Property(e => e.marks)
-                .IsFixedLength();
         }
     }
 }

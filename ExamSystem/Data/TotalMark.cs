@@ -6,13 +6,13 @@ namespace ExamSystem.Data
     {
         public int Id { get; set; }
 
-        public int? userid { get; set; }
+        public int? Userid { get; set; }
 
-        public int? testid { get; set; }
+        public int? Testid { get; set; }
 
         [Required]
         [StringLength(10)]
-        public string marks { get; set; }
+        public string Marks { get; set; }
 
         public virtual Test Test { get; set; }
 

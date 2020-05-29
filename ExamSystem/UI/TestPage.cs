@@ -1,28 +1,32 @@
 ﻿using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using ExamSystem.Logic;
+using ExamSystem.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExamSystem.UI
 {
     public partial class TestPage : DevComponents.DotNetBar.OfficeForm
     {
-        public static string testCode;
-        public TestPage()
+        private readonly TestService _testService;
+        private readonly ApplicationUserStateService _stateService;
+        public TestPage(TestService testService,ApplicationUserStateService stateService)
         {
             InitializeComponent();
-        }
-        public string getTestCode
-        {
-            set {testCode = value; }
-            get { return testCode; }
-           
+            _testService = testService;
+            _stateService = stateService;
+            this.FormClosing += TestPage_FormClosing; ;
         }
 
-        string code;
+        private void TestPage_FormClosing(object sender, FormClosingEventArgs e)
+        {
+           var loginPage = Program.CreateServiceProvider().GetRequiredService<Login>();
+            loginPage.Show();
+        }
+
+       
         public void GetTest()
         {
-            ConnectionString Dbconnect = new ConnectionString();
             if (TestCode.Text == "")
             {
                 MessageBox.Show("Please Enter A Subject Code", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -31,26 +35,13 @@ namespace ExamSystem.UI
             }
             try
             {
-                SqlConnection connection = new SqlConnection();
-                connection = new SqlConnection(Dbconnect.Connect());
-                connection.Open();
-
-                SqlCommand command = new SqlCommand();
-                command = new SqlCommand("SELECT * FROM test WHERE testcode='" + TestCode.Text + "'", connection);
-                SqlDataReader datareader = command.ExecuteReader();
-                int count = 0;
-                while (datareader.Read())
+               var test= _testService.GetTestDetails(TestCode.Text);
+                if (test!=null)
                 {
-                    count = count + 1;
-                }
-                datareader.Close();
-                connection.Close();
-
-                if (count == 1)
-                {
+                    _stateService.SetTestId(test.Id);
                     this.Hide();
-                    //_questionPage.passCode = TestCode.Text.ToString();
-                    //_questionPage.Show();
+                    var questionPage = Program.CreateServiceProvider().GetRequiredService<QuestionPage>();
+                    questionPage.ShowDialog();
                 }
                 else
                 {
@@ -67,7 +58,6 @@ namespace ExamSystem.UI
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            testCode = TestCode.Text.ToString();
             GetTest();
         }
 

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using ExamSystem.Data;
 using ExamSystem.Logic;
 using ExamSystem.Services;
+using Microsoft.Extensions.DependencyInjection;
+using Telerik.WinControls;
 
 namespace ExamSystem.UI
 {
@@ -14,25 +14,29 @@ namespace ExamSystem.UI
     {
         private readonly QuestionService _questionService;
         private readonly Yates _yates;
-
+        private readonly ApplicationUserStateService _stateService;
+        private readonly TestService _testService;
         public static int Count = 1;
         int _hour = 0, _minutes = 0, _seconds = 0;
-        public Question _question;
+        public Question Question;
         public Stack<Question> QuestionsStack { get; set; }
 
-        public QuestionPage(QuestionService questionService, Yates yates)
+        public QuestionPage(QuestionService questionService, Yates yates,ApplicationUserStateService stateService,TestService testService)
         {
             InitializeComponent();
+            this.Load += QuestionPage_Load;
             _questionService = questionService;
             _yates = yates;
+            _stateService = stateService;
+            _testService = testService;
             QuestionsStack = new Stack<Question>();
-            _question=new Question();
+            Question=new Question();
             SetSize();
             SetTexBoxSize();
         }
 
-        public string testCode = null;
-        private bool state = false;
+       
+
 
         private void SetSize()
         {
@@ -90,11 +94,12 @@ namespace ExamSystem.UI
         {
             try
             {
+               
                 _questionService.InsertQuestionAnswer(new AnsweredQuestion
                 {
-                    questionid = questionId,
-                    useranswer = answer,
-                    userid = userId
+                    Questionid = questionId,
+                    Useranswer = answer,
+                    Userid = userId
                 });
                 Count++;
 
@@ -203,8 +208,8 @@ namespace ExamSystem.UI
                 var sure = MessageBox.Show("Are You Sure " + SetAnswer() + " is the Answer ?", "Confirm",
                     MessageBoxButtons.YesNo);
                 if (sure != DialogResult.Yes) return;
-                var loggedInUser = (CustomIdentity) Thread.CurrentPrincipal.Identity;
-                InsertAnswer(SetAnswer(), _question.Id,loggedInUser.Credentials.Id);
+              
+                InsertAnswer(SetAnswer(), Question.Id,_stateService.CurrentlyLoggedInUser().Id);
                 if (QuestionsStack.Count() != 0)
                 {
                     GetQuestion();
@@ -216,7 +221,8 @@ namespace ExamSystem.UI
                         MessageBoxButtons.OK);
                     if (complete == DialogResult.OK)
                     {
-                        //_userResultPage.Show();
+                        var userResult = Program.CreateServiceProvider().GetRequiredService<UserResult>();
+                        userResult.ShowDialog();
                         Close();
                     }
                 }
@@ -228,13 +234,13 @@ namespace ExamSystem.UI
         private void GetQuestion()
         {
             if (QuestionsStack.Count == 0) return;
-             _question = QuestionsStack.Pop();
+             Question = QuestionsStack.Pop();
 
-            QuestionBox.Text = $@"{Count}. {_question.text}";
-            OptionA.Text = _question.opA;
-            OptionB.Text = _question.opB;
-            OptionC.Text = _question.opC;
-            OptionD.Text = _question.opd;
+            QuestionBox.Text = $@"{Count}. {Question.Text}";
+            OptionA.Text = Question.OpA;
+            OptionB.Text = Question.OpB;
+            OptionC.Text = Question.OpC;
+            OptionD.Text = Question.Opd;
             OK.Visible = true;
             ShowControls();
             OptionState();
@@ -256,16 +262,22 @@ namespace ExamSystem.UI
 
         private void QuestionPage_Load(object sender, EventArgs e)
         {
-            var test = _questionService.GetTestDetails(testCode);
-            if (test == null) return;
-            Welcome.Text = $@"Welcome to the {test?.name} Examination!Press Start when Ready";
-            var questions = test.Questions.ToList();
-            QuestionsStack = _yates.ShuffleQuestions(questions);
-            TestTime.Enabled = false;
-            OK.Visible = false;
-            Start.Visible = true;
-            HideControls();
-            OptionState();
+            var test = _testService.GetTestDetails(_stateService.GetTestId());
+            if (test != null)
+            {
+                Welcome.Text = $@"Welcome to the {test?.Name} Examination!Press Start when Ready";
+                var questions = test.Questions.ToList();
+                QuestionsStack = _yates.ShuffleQuestions(questions);
+                TestTime.Enabled = false;
+                OK.Visible = false;
+                Start.Visible = true;
+                HideControls();
+                OptionState();
+            }else{
+                MessageBox.Show("No Test found for the provided code");
+
+            }
+
         }
     }
 }

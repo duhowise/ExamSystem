@@ -17,22 +17,22 @@ namespace ExamSystem.Data
 
         [Required]
         [StringLength(75)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [Required]
         [StringLength(75)]
-        public string password { get; set; }
+        public string Password { get; set; }
 
         [Required]
         [StringLength(30)]
         public string UserType { get; set; }
 
-        public int? testid { get; set; }
+        public int? Testid { get; set; }
 
         [StringLength(20)]
-        public string status { get; set; }
+        public string Status { get; set; }
 
-        public int? position { get; set; }
+        public int? Position { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AnsweredQuestion> AnsweredQuestions { get; set; }
