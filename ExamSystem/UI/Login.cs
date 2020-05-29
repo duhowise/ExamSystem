@@ -56,8 +56,9 @@ namespace ExamSystem.UI
                         return;
                     }
                     _stateService.SetCurrentlyLoggedInUser(userLoginSuccessful);
+                    _testEvaluationService.UserInProgress(userLoginSuccessful);
 
-                    this.Hide();
+                this.Hide();
                     var testPage = Program.CreateServiceProvider().GetRequiredService<TestPage>();
                 testPage.Show();
 

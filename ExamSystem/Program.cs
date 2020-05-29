@@ -22,7 +22,7 @@ namespace ExamSystem
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var database = container.GetRequiredService<ExamDatabase>();
-
+            database.Database.CreateIfNotExists();
             var admin = database.Users.FirstOrDefault(x =>
                 x.Password == "Administrator" && x.UserType == "Administrator");
 

@@ -37,6 +37,27 @@ namespace ExamSystem.Services
             }
         }
 
+        public void UserInProgress(User user)
+        {
+            try
+            {
+                var dbEntry =
+                    _database.Users.FirstOrDefault(x => x.UserType == user.UserType && x.Password == user.Password);
+                if (dbEntry == null)
+                {
+                    throw new Exception("could not save status to database");
+                }
+
+                dbEntry.Status = "InProgress";
+                _database.SaveChanges();
+            }
+
+            catch (SqlException exception)
+            {
+                throw new ApplicationException(exception.Message, exception);
+            }
+        }
+
         public void SaveMarks(decimal marks, int testId, int userId)
         {
             try
@@ -49,7 +70,6 @@ namespace ExamSystem.Services
             catch (SqlException exception)
             {
                 throw new InstanceNotFoundException(exception.Message, exception);
-
             }
         }
 
@@ -65,6 +85,7 @@ namespace ExamSystem.Services
                 throw new InstanceNotFoundException(exception.Message, exception);
             }
         }
+
         public string CheckUserStatus(string password)
         {
             try
@@ -82,8 +103,8 @@ namespace ExamSystem.Services
         {
             try
             {
-                var marks= _database.UserMarks.Where(x => x.Testid == testId );
-                return marks.Sum(x=>x.Mark);
+                var marks = _database.UserMarks.Where(x => x.Testid == testId);
+                return marks.Sum(x => x.Mark);
             }
 
             catch (SqlException exception)
@@ -96,7 +117,6 @@ namespace ExamSystem.Services
         {
             try
             {
-
                 return _database.UserMarks.Count(x => x.Userid == userId && x.Testid == testId && x.Mark > 0);
             }
 
@@ -110,7 +130,6 @@ namespace ExamSystem.Services
         {
             try
             {
-
                 return _database.UserMarks.Count(x => x.Userid == userId && x.Testid == testId && x.Mark == 0);
             }
 
@@ -136,8 +155,8 @@ namespace ExamSystem.Services
         {
             try
             {
-
-                var marks = _database.UserMarks.Where(x => x.Testid == testId && x.Userid == userId).Select(x => x.Mark);
+                var marks = _database.UserMarks.Where(x => x.Testid == testId && x.Userid == userId)
+                    .Select(x => x.Mark);
                 return marks.Sum();
             }
 
